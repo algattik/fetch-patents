@@ -15,7 +15,6 @@ from patent_client import Patent
 # Define parameters
 year_pattern = "????"
 max_num = 10000
-parallelism = 4
 
 # Check if the required command-line argument is provided
 if len(sys.argv) != 2:
