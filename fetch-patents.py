@@ -4,10 +4,11 @@ import sys
 import re
 from pathlib import Path
 import glob
+import time
+
 
 import pandas as pd
 from htmldocx import HtmlToDocx
-from joblib import Parallel, delayed
 from patent_client import Patent
 
 
@@ -46,11 +47,14 @@ def process(patent_number):
     if marker_file.exists():
         return
 
+    # Delay API call to avoid throttling
+    time.sleep(10)
+
     # Retrieve patent information using the patent number
     try:
       patent_object = Patent.objects.get(patent_number)
     except Exception as e:
-      print(f"Error retrieving dataset_dictpatent information for {patent_number}: {e}")
+      print(f"Error retrieving patent information for {patent_number}: {e}")
       return
 
     # Print the patent ID for debugging purposes
@@ -77,8 +81,6 @@ filtered_df = df[df.assignee.str.contains(assignee_filter, case=False, na=False)
 
 print(f"Downloading {len(filtered_df)} patents")
 
-# Process the selected patents in parallel using joblib
-
-#Parallel(n_jobs=parallelism)(delayed(process)(patent_number) for patent_number in list(filtered_df.patent_number))
-
-[process(patent_number) for patent_number in list(filtered_df.patent_number)]
+# Process the selected patents
+for patent_number in list(filtered_df.patent_number):
+  process(patent_number)
