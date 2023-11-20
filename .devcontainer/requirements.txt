@@ -1,0 +1,4 @@
+joblib
+patent-client
+pandas
+htmldocx
